@@ -11,6 +11,13 @@ pipeline{
             steps{
                git credentialsId: 'multibranchpipeline', url: 'https://github.com/dhanuar/project-multibranch'
             }
+            stage("git checkout"){
+            when {
+                branch "develop"
+            }
+            steps{
+               sh "mvn package"
+            }
         }
     }  
 }
