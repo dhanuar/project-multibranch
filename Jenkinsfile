@@ -9,6 +9,14 @@ pipeline{
                git credentialsId: 'multibranchpipeline', url: 'https://github.com/dhanuar/project-multibranch'
             }
         }
+        stage("maven build"){
+            when {
+                branch "develop"
+            }
+            steps{
+               sh "mvn package"
+            }
+        }
     }
 }
             
