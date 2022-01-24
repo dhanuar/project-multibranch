@@ -11,7 +11,7 @@ pipeline{
             steps{
                git credentialsId: 'multibranchpipeline', url: 'https://github.com/dhanuar/project-multibranch'
             }
-            stage("git checkout"){
+            stage("maven build"){
             when {
                 branch "develop"
             }
