@@ -17,7 +17,7 @@ pipeline{
                 branch "develop"
             }
             steps{
-              sh 'mvn package'
+              sh "mvn package"
             }
         }
     }  
