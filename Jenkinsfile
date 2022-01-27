@@ -1,15 +1,10 @@
 pipeline{
     agent any
+    triggers {
+      pollSCM '* * * * *'
+    }
     stages{
-        stage("git checkout"){
-            when {
-                branch "develop"
-            }
-            steps{
-               git credentialsId: 'multibranchpipeline', url: 'https://github.com/dhanuar/project-multibranch'
-            }
-        }
-        stage("maven build"){
+        stage("Maven Build"){
             when {
                 branch "develop"
             }
@@ -17,25 +12,17 @@ pipeline{
                sh "mvn package"
             }
         }
-        stage("maven build"){
-            when {
-                branch "develop"
-            }
-            steps{
-               sh "mvn package"
-            }
-        }
-         stage("sonarqube analyisis"){
+        stage("SonarQube Analysis"){
             when {
                 branch "develop"
             }
             steps{
                withSonarQubeEnv('sonar7') {
-               sh "mvn sonar:sonar"
+                    sh "mvn sonar:sonar"
                }
             }
         }
-        stage("sonarqube status"){
+        stage("SonarQube Status"){
             when {
                 branch "develop"
             }
@@ -48,10 +35,33 @@ pipeline{
                         if (qg.status != 'OK') {
                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
                         }
-                 }
+                    }
+                }
+            }
+        }
+        stage("Nexus"){
+            when {
+                branch "develop"
+            }
+            steps{
+               echo "uploading artifacts to nexus...."
+            }
+        }
+        stage("Deploy To QA"){
+            when {
+                branch "qa"
+            }
+            steps{
+               echo "deploying to qa server...."
+            }
+        }
+        stage("Deploy To production"){
+            when {
+                branch "master"
+            }
+            steps{
+               echo "deploying to master server...."
+            }
         }
     }
 }
-            
-            
-         
